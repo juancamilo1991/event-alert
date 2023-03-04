@@ -1,0 +1,35 @@
+.container {
+    height: 95%;
+    width: 0;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: var(--black);
+    overflow-x: hidden;
+    transition: all 0.2s ease-in-out;
+    padding-top: 60px;
+}
+
+.container span {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: var(--blue);
+    display: block;
+    font-family: light;
+}
+
+.container .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    cursor: pointer;
+  }
+
+  .show_sidebar {
+    width: 250px;
+    transition: all 0.2s ease-in-out;
+  }

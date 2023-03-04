@@ -1,0 +1,108 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    max-width: 1600px;
+}
+
+.container {
+    display: grid;
+    place-items: center;
+}
+
+.grid_container {
+    display: grid;
+    grid-template-columns: minmax(250px, 350px) minmax(500px, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    flex-grow: 1;
+    position: relative;
+}
+
+.popular_areas {
+    grid-row: 1 / 2;
+    display: grid;
+    place-items: center;
+    position: relative;
+}
+
+.bottom_border_container {
+    position: absolute;
+    bottom: 0;
+    height: 0.4rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.bottom_border {
+    height: 0.4rem;
+    width: 70%;
+    background-color: var(--black);
+    border-radius: 20px;
+}
+
+.channel_posts_container {
+    grid-row: 1 / -1;
+    position: relative;
+    transition: all 0.2s ease-in-out;
+}
+
+.channel_posts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.all_posts_container {
+    width: 500px;
+    min-height: 300px;
+    border: 1px solid var(--black);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.mui_post_card {
+    padding: 10px;
+    margin: 10px;
+}
+
+.open_sidenav {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    display: block;
+}
+
+.hide_button {
+    transition: all 0.2s ease-in-out;
+    display: none;
+}
+
+.sidenav_active {
+    margin-right: 250px;
+    transition: all 0.2s ease-in-out;
+}
+
+.left_border_container {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    width: 0.4rem;
+    display: flex;
+    align-items: center;
+}
+
+.left_border {
+    height: 80%;
+    width: 0.4rem;
+    background-color: var(--black);
+    border-radius: 20px;
+}
+
+
+

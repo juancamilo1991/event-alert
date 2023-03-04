@@ -1,0 +1,49 @@
+@font-face {
+    font-family: 'regular';
+    src: local('SignikaNegative-Regular'),
+         url('./fonts/Signika_Negative/static/SignikaNegative-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'bold';
+    src: local('SignikaNegative-Bold'),
+         url('./fonts/Signika_Negative/static/SignikaNegative-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'light';
+    src: local('SignikaNegative-Light'),
+         url('./fonts/Signika_Negative/static/SignikaNegative-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'medium';
+    src: local('SignikaNegative-Medium'),
+         url('./fonts/Signika_Negative/static/SignikaNegative-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'semiBold';
+    src: local('SignikaNegative-SemiBold'),
+         url('./fonts/Signika_Negative/static/SignikaNegative-SemiBold.ttf') format('truetype');
+}
+
+:root {
+    --purple: #FFA9E7;
+    --black: #2E4052;
+    --green: #25F500;
+    --blue: #35A7FF;
+}
+
+body {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+* {
+    font-family: 'regular';
+}
+
+p, span {
+    color: var(--black);
+}

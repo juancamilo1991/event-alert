@@ -1,0 +1,14 @@
+.container {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--black);
+}
+
+.container span {
+    font-family: light;
+    color:var(--purple);
+    margin-right: 7px;
+}

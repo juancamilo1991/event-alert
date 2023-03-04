@@ -1,0 +1,32 @@
+.container {
+    width: 100%;
+    height: 3rem;
+    background-color: var(--blue);
+    position: relative;
+}
+
+.logoutBtn {
+    position: absolute;
+    right: 0;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.navbar a span:hover {
+    color: var(--purple);
+}
+
+.navbar span:nth-child(2n) {
+    margin: 0 5px;
+    color: var(--green);
+}
+
+.navbar a {
+    text-decoration: none;
+}
+
