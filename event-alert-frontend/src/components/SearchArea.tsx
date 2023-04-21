@@ -1,44 +1,53 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import classes from './styles/SearchArea.module.css';
 import Button from '@mui/material/Button';
-import { getAllPosts } from '../api/blogPosts';
-import { ChannelPost } from '../types/types';
-
+import { ALLPOSTS_ENDPOINT } from '../api-client/blogPosts';
+import { ChannelPost, RequestError } from '../types/types';
+import { makeRequest } from '../helpers/api-requests/getPosts';
 
 interface SearchAreaProps {
+    displayError: (error: RequestError) => void;
     displayPosts: (posts: ChannelPost[]) => void;
 }
 
 const SearchArea = (props: SearchAreaProps) => {
 
-  const [area, setArea] = useState<number>(0);
-  const [blogPosts, setBlogPosts] = useState<ChannelPost[]>([]);
-
-  console.log(area);
-  console.log(blogPosts);
+  const [area, setArea] = useState<string>('');
+  const [incomingPosts, setIncomingPosts] = useState<ChannelPost[]>([]);
+  const [applyFilterBtn, setApplyFilterBtn] = useState<boolean>(true);
 
   useEffect(() => {
-    // trigger when blogposts change
-    props.displayPosts(blogPosts);
-  }, [blogPosts])
+    if (area !== '') {
+      setApplyFilterBtn(false);
+    }
+    else {
+      setApplyFilterBtn(true);
+    }
+  }, [area])
 
-  function getPosts(e: FormEvent<HTMLFormElement>) {
-    // api call
-    e.preventDefault();
-    getAllPosts(area).then(res => setBlogPosts(res));
+  useEffect(() => {
+    incomingPosts !== undefined ? props.displayPosts(incomingPosts) : null;
+  }, [incomingPosts])
+
+  function handleIncomingPosts(result: ChannelPost[]): void {
+    setIncomingPosts(result);
+  }
+
+  function getAllPosts(e: FormEvent<HTMLFormElement>) {
+    makeRequest(e, ALLPOSTS_ENDPOINT, area, props.displayError, handleIncomingPosts);
   }
 
   function onChange(e: ChangeEvent<HTMLInputElement>) {
-    setArea(e.target.valueAsNumber);
+    setArea(e.target.value);
 }
 
 
   return (
     <section className={classes.search_area}>
-        <form onSubmit={getPosts}>
+        <form onSubmit={getAllPosts}>
             <label htmlFor="search">Search</label>
-            <input type="number" id='search' onChange={onChange} />
-            <Button type='submit' variant='contained'>Go!</Button>
+            <input type="text" id='search' onChange={onChange} />
+            <Button disabled={applyFilterBtn} type='submit' variant='contained'>Go!</Button>
         </form>
     </section>    
   )

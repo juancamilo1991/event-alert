@@ -27,6 +27,8 @@ const Channels = () => {
     setJwt(jwt);
     setAuthenticated(jwt);
   }
+  console.log(channelPosts);
+  console.log(error);
   
   function handleIncomingErrorMessage(error: RequestError) {
     setErrorMessage(error);
@@ -49,6 +51,7 @@ const Channels = () => {
           </section>
           <SearchArea
             displayPosts={(posts: ChannelPost[]) => setChannelPosts(posts)}
+            displayError={(error: RequestError) => handleIncomingErrorMessage(error)}
           />
           <section className={`${classes.channel_posts_container} ${isNavActive ? classes.sidenav_active : ''}`}>
             <div className={classes.left_border_container}>

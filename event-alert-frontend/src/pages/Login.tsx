@@ -2,7 +2,7 @@ import React, { useEffect, FormEvent, ChangeEvent } from 'react'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../authentication/utils/useLocalState';
-import { loginUser } from '../api/users';
+import { loginUser } from '../api-client/users';
 
 const Login = () => {
 

@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FormEvent, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import { registerUser } from '../api/users';
+import { registerUser } from '../api-client/users';
 
 
 const Registration = () => {

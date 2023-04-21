@@ -1,8 +1,9 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import classes from './styles/SideBar.module.css';
 import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button, TextField } from '@mui/material';
-import { FILTERED_POSTS_ENDPOINT, getPosts } from '../api/blogPosts';
-import { ChannelPost, RequestError, isRequestError } from '../types/types';
+import { FILTERED_POSTS_ENDPOINT } from '../api-client/blogPosts';
+import { ChannelPost, RequestError } from '../types/types';
+import { makeRequest } from '../helpers/api-requests/getPosts';
 
 interface sideBarProps {
     isActive: boolean,
@@ -43,35 +44,20 @@ const SideBar = (props: sideBarProps) => {
     setArea(event.target.value);
   }
 
-  function handleIncominPosts(result: ChannelPost[]): void {
+  function handleIncomingPosts(result: ChannelPost[]): void {
     setIncomingPosts(result);
   }
 
-
-  function isTextInputNumber(area: string) {
-    return (typeof area === "string" && !isNaN(area as any))
+  function getFilteredBlogPosts(event: FormEvent<HTMLFormElement>) {
+    makeRequest(event, FILTERED_POSTS_ENDPOINT, area, props.displayError, handleIncomingPosts, categoryValue, filterValue);
   }
-
-  async function applyFilter(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    //get filtered posts
-      if (isTextInputNumber(area)) {
-        const convertedArea = parseInt(area);
-          const result = await getPosts(FILTERED_POSTS_ENDPOINT, convertedArea, categoryValue, filterValue);
-          if (isRequestError(result)) {
-            return props.displayError(result);
-          }
-          handleIncominPosts(result);
-        }
-      }
 
 
   return (
     <div className={`${classes.container} ${props.isActive ? classes.show_sidebar : ''}`}>
         <span className={classes.closebtn} onClick={props.closeSideNav}>&times;</span>
         <span className={classes.radio_group}>
-          <form onSubmit={applyFilter}>
+          <form onSubmit={getFilteredBlogPosts}>
             <div>
               <TextField
               id='plz'

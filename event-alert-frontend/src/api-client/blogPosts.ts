@@ -15,6 +15,7 @@ export async function getPosts(endpoint: string, area_code: number, category?: s
             order: order
          }
       });
+      console.log(result.data);
       return result.data;
    } catch (error) {
          if (axios.isAxiosError(error)) {
@@ -25,6 +26,7 @@ export async function getPosts(endpoint: string, area_code: number, category?: s
             }
             return axiosError;
          }
+         console.log(error);
         return error as RequestError;
    }
 }
