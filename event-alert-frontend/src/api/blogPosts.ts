@@ -8,26 +8,24 @@ export const FILTERED_POSTS_ENDPOINT = 'blog/posts';
 
 export async function getPosts(endpoint: string, area_code: number, category?: string, order?: string): Promise<ChannelPost[] | RequestError> {
    try {
-      return await client.get(endpoint, {
+      const result = await client.get(endpoint, {
          params: {
             area: area_code,
             category: category,
             order: order
          }
       });
+      return result.data;
    } catch (error) {
-      return new Promise<RequestError>((resolve, reject) => {
          if (axios.isAxiosError(error)) {
+            console.log(error);
             const axiosError: RequestError = {
-               status: error.status as number,
-               message: error.message
+               myStatus: error.response?.status,
+               message: error.response?.data
             }
-            resolve(axiosError)  
+            return axiosError;
          }
-         else {
-            resolve(error as RequestError);
-         }
-      })
+        return error as RequestError;
    }
 }
 
