@@ -22,8 +22,7 @@ const Channels = () => {
   function toggleSideNav() {
     setNavActive(!isNavActive);
   }
-  console.log(error);
-  console.log(channelPosts);
+  
   function logUserOut(jwt: string) {
     setJwt(jwt);
     setAuthenticated(jwt);

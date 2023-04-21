@@ -17,6 +17,7 @@ const SideBar = (props: sideBarProps) => {
   const [filterValue, setFilterValue] = useState<string>('');
   const [applyFilterBtn, setApplyFilterBtn] = useState<boolean>(true);
   const [area, setArea] = useState<string>('');
+  const [incomingPosts, setIncomingPosts] = useState<ChannelPost[]>();
 
   useEffect(() => {
     if (area !== '' && categoryValue !== '') {
@@ -27,6 +28,10 @@ const SideBar = (props: sideBarProps) => {
     }
   }, [area, categoryValue])
 
+  useEffect(() => {
+    incomingPosts !== undefined ? props.displayPosts(incomingPosts) : null;
+  }, [incomingPosts])
+
   function handleRadioChange(event: ChangeEvent<HTMLInputElement>) {
     if (event.target.name === 'category') {
       return setCategoryValue(event.target.value);
@@ -36,6 +41,10 @@ const SideBar = (props: sideBarProps) => {
 
   function handleAreaChange(event: ChangeEvent<HTMLInputElement>) {
     setArea(event.target.value);
+  }
+
+  function handleIncominPosts(result: ChannelPost[]): void {
+    setIncomingPosts(result);
   }
 
 
@@ -53,7 +62,7 @@ const SideBar = (props: sideBarProps) => {
           if (isRequestError(result)) {
             return props.displayError(result);
           }
-          return props.displayPosts(result);
+          handleIncominPosts(result);
         }
       }
 
