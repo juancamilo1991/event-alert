@@ -2,7 +2,7 @@ type Author = {
     username: string
 }
 
-interface ChannelPost {
+export interface ChannelPost {
     title: string,
     text: string,
     category: string,
@@ -11,7 +11,7 @@ interface ChannelPost {
     user: Author,
 }
 
-interface LoginData {
+export interface LoginData {
     username: string,
     password: string,
 }
@@ -20,6 +20,14 @@ interface EmailData {
     email: string,
 }
 
-type RegistrationData = LoginData & EmailData;
+export interface RequestError {
+    myStatus: number | undefined,
+    message: number | undefined
+}
 
-export type {ChannelPost, RegistrationData, LoginData}
+export function isRequestError(object: unknown): object is RequestError {
+    return Object.prototype.hasOwnProperty.call(object, "myStatus")
+        && Object.prototype.hasOwnProperty.call(object, "message");
+}
+
+export type RegistrationData = LoginData & EmailData;
