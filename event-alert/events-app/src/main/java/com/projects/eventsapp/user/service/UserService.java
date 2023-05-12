@@ -30,7 +30,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUser(String username) throws UsernameNotFoundException {
+    public User getUserByUsername(String username) throws UsernameNotFoundException {
        return (User) userDetailsService.loadUserByUsername(username);
     }
 
