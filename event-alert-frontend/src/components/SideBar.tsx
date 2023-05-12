@@ -1,24 +1,20 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import classes from './styles/SideBar.module.css';
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button, TextField } from '@mui/material';
+import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button, TextField, InputLabel } from '@mui/material';
 import { FILTERED_POSTS_ENDPOINT } from '../api-client/blogPosts';
-import { ChannelPost, RequestError } from '../types/types';
-import { makeRequest } from '../helpers/api-requests/getPosts';
+import { ChannelPost, SideBarProps } from '../types/types';
+import { makeRequest } from '../helpers/api-requests/apiRequests';
+import { useHandleApiResponse } from '../customHooks/useHandleApiResponse';
 
-interface sideBarProps {
-    isActive: boolean,
-    closeSideNav: () => void,
-    displayPosts: (posts: ChannelPost[]) => void,
-    displayError: (error: RequestError) => void
-}
 
-const SideBar = (props: sideBarProps) => {
+const SideBar = (props: SideBarProps) => {
 
   const [categoryValue, setCategoryValue] = useState<string>('');
   const [filterValue, setFilterValue] = useState<string>('');
   const [applyFilterBtn, setApplyFilterBtn] = useState<boolean>(true);
   const [area, setArea] = useState<string>('');
-  const [incomingPosts, setIncomingPosts] = useState<ChannelPost[]>();
+
+  const [handleIncomingPosts] = useHandleApiResponse(props);
 
   useEffect(() => {
     if (area !== '' && categoryValue !== '') {
@@ -29,9 +25,6 @@ const SideBar = (props: sideBarProps) => {
     }
   }, [area, categoryValue])
 
-  useEffect(() => {
-    incomingPosts !== undefined ? props.displayPosts(incomingPosts) : null;
-  }, [incomingPosts])
 
   function handleRadioChange(event: ChangeEvent<HTMLInputElement>) {
     if (event.target.name === 'category') {
@@ -44,12 +37,9 @@ const SideBar = (props: sideBarProps) => {
     setArea(event.target.value);
   }
 
-  function handleIncomingPosts(result: ChannelPost[]): void {
-    setIncomingPosts(result);
-  }
-
   function getFilteredBlogPosts(event: FormEvent<HTMLFormElement>) {
-    makeRequest(event, FILTERED_POSTS_ENDPOINT, area, props.displayError, handleIncomingPosts, categoryValue, filterValue);
+    event.preventDefault();
+    makeRequest(FILTERED_POSTS_ENDPOINT, area, props.displayError, handleIncomingPosts, '', categoryValue, filterValue);
   }
 
 
