@@ -7,6 +7,7 @@ import com.projects.eventsapp.blog.service.BlogPostService;
 import com.projects.eventsapp.blog.utils.JsonViewProfiles;
 import com.projects.eventsapp.blog.utils.BlogUtils;
 import com.projects.eventsapp.errorHandling.BlogCreationFailedException;
+import com.projects.eventsapp.errorHandling.NoSuchBlogEntryException;
 import com.projects.eventsapp.errorHandling.UserAlreadyExistException;
 import com.projects.eventsapp.user.dto.UserDto;
 import com.projects.eventsapp.user.model.User;
@@ -19,7 +20,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -32,7 +35,6 @@ public class BlogPostController {
     private final UserUtils userUtils;
 
 
-
     public BlogPostController(BlogPostService blogPostService, UserService userService, UserDetailsServiceImpl userDetailsService) {
         this.blogPostService = blogPostService;
         this.userService = userService;
@@ -42,54 +44,58 @@ public class BlogPostController {
     // locked
     @PostMapping(path = "/create-post")
     @JsonView(JsonViewProfiles.BlogPostChannel.class)
-    public ResponseEntity<?> createPost(Principal principal, @RequestBody @Valid BlogDto blogDto) {
-         try {
-             BlogPost blogPost = blogPostService.createPost(userUtils.getStoredUser(principal), blogDto);
-             return ResponseEntity.ok(new BlogDto(blogPost));
-         }
-         catch (UsernameNotFoundException | BlogCreationFailedException e) {
-             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                     .body(e.getMessage());
-         }
-
+    public ResponseEntity<?> createPost(@NotNull Principal principal, @RequestBody @Valid BlogDto blogDto) {
+        try {
+            BlogDto newBlogDto = BlogUtils.mapToDto((Collections.singletonList(blogPostService.createPost(userService.getStoredUser(principal), blogDto)))).get(0);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newBlogDto);
+        } catch (UsernameNotFoundException | BlogCreationFailedException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
 
     // locked
     @DeleteMapping(path = "/delete-post/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(value = "id") Long postId, Principal principal) {
         try {
-            userUtils.getStoredUser(principal);
+            userService.getStoredUser(principal);
             blogPostService.deletePost(postId);
             return ResponseEntity.ok("Post successfully deleted");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Post could not be deleted");
         }
     }
 
     @GetMapping(path = "/channel-posts")
     @JsonView(JsonViewProfiles.BlogPostChannel.class)
-    public List<BlogDto> getAllPosts(@RequestParam Integer area) {
-        return BlogUtils.mapToDto(blogPostService.getByAreaOrderByNewest(area));
+    public ResponseEntity<?> getAllPosts(@RequestParam Integer area) {
+        try {
+            return ResponseEntity.ok(BlogUtils.mapToDto(blogPostService.getByAreaOrderByNewest(area)));
+        } catch (NoSuchBlogEntryException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping(path = "/posts")
     @JsonView(JsonViewProfiles.BlogPostChannel.class)
-    public List<BlogDto> getPostsByCategory(@RequestParam Integer area,
-                                     @RequestParam String category,
-                                     @RequestParam(required = false, defaultValue = "newest") String order) {
-
-        if (order.equals("newest")) {
-            return  BlogUtils.mapToDto(blogPostService.getByAreaCategoryOrderByNewest(area, category));
+    public ResponseEntity<?> getPostsByCategory(@RequestParam Integer area,
+                                            @RequestParam String category,
+                                            @RequestParam(required = false, defaultValue = "newest") String order) {
+        try {
+            if (order.equals("newest")) {
+                return ResponseEntity.ok(BlogUtils.mapToDto(blogPostService.getByAreaCategoryOrderByNewest(area, category)));
+            }
+            if (order.equals("oldest")) {
+                return ResponseEntity.ok(BlogUtils.mapToDto(blogPostService.getByAreaCategoryOrderByOldest(area, category)));
+            }
+            if (order.equals("most")) {
+                return ResponseEntity.ok(BlogUtils.mapToDto(blogPostService.getByAreaCategoryOrderByMostLiked(area, category)));
+            }
+            return ResponseEntity.ok(BlogUtils.mapToDto(blogPostService.getByAreaCategoryOrderByLessLiked(area, category)));
         }
-        if (order.equals("oldest")) {
-            return  BlogUtils.mapToDto(blogPostService.getByAreaCategoryOrderByOldest(area, category));
+        catch (NoSuchBlogEntryException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-        if (order.equals("most")) {
-            return  BlogUtils.mapToDto(blogPostService.getByAreaCategoryOrderByMostLiked(area, category));
-        }
-            return  BlogUtils.mapToDto(blogPostService.getByAreaCategoryOrderByLessLiked(area, category));
-
     }
 
     @GetMapping(path = "/{postId}")
@@ -101,34 +107,36 @@ public class BlogPostController {
     // locked
     @GetMapping(path = "/my-posts")
     @JsonView(JsonViewProfiles.BlogPostChannel.class)
-    public List<BlogDto> getMyPosts(Principal principal,
+    public ResponseEntity<?> getMyPosts(Principal principal,
                                     @RequestParam(required = false, defaultValue = "newest") String order) {
+        try {
+            if (order.equals("newest")) {
+                return ResponseEntity.ok(BlogUtils.mapToDto(blogPostService.getByUserOrderByNewest(userService.getStoredUser(principal).getId())));
+            }
 
-        if (order.equals("newest")){
-            return BlogUtils.mapToDto(blogPostService.getByUserOrderByNewest(userService.getStoredUser(principal).getId()));
+            if (order.equals("oldest")) {
+                return ResponseEntity.ok(BlogUtils.mapToDto(blogPostService.getByUserOrderByOldest(userService.getStoredUser(principal).getId())));
+            }
+
+            if (order.equals("most")) {
+                return ResponseEntity.ok(BlogUtils.mapToDto(blogPostService.getByUserOrderByMostLiked(userService.getStoredUser(principal).getId())));
+            }
+            return ResponseEntity.ok(BlogUtils.mapToDto(blogPostService.getByUserOrderByLessLiked(userService.getStoredUser(principal).getId())));
         }
-
-        if (order.equals("oldest")) {
-            return BlogUtils.mapToDto(blogPostService.getByUserOrderByOldest(userService.getStoredUser(principal).getId()));
+        catch (NoSuchBlogEntryException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
-        if (order.equals("most")) {
-            return BlogUtils.mapToDto(blogPostService.getByUserOrderByMostLiked(userService.getStoredUser(principal).getId()));
-        }
-            return BlogUtils.mapToDto(blogPostService.getByUserOrderByLessLiked(userService.getStoredUser(principal).getId()));
-
     }
 
     // locked
     @PutMapping(path = "/add-like/{id}")
     public ResponseEntity<String> addLike(Principal principal, @PathVariable Long id) {
-        User user = userUtils.getStoredUser(principal);
+        User user = userService.getStoredUser(principal);
         BlogPost post = getPostById(id);
         // check if already liked this post
         if (userService.isAlreadyLiked(user.getId(), post.getId()).isPresent()) {
             return ResponseEntity.ok("Already liked!");
-        }
-        else {
+        } else {
             post.addLikes(user);
             user.addLikedBlogPosts(post);
             post.incrementLikeCount();

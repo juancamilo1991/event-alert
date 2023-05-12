@@ -40,7 +40,7 @@ public class BlogDto {
     @JsonView(JsonViewProfiles.BlogPostDetail.class)
     private Set<User> likes;
     @NotNull(message = "please provide area")
-    @JsonView(JsonViewProfiles.BlogPostDetail.class)
+    @JsonView({JsonViewProfiles.BlogPostDetail.class, JsonViewProfiles.BlogPostChannel.class})
     private Integer area;
 
 
