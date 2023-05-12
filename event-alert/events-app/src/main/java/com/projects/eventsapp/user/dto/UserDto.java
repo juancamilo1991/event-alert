@@ -41,6 +41,10 @@ public class UserDto extends LoginDto {
         this.email = user.getEmail();
         this.story = user.getStory();
         this.likedBlogPosts = user.getLikedBlogPosts();
+        this.followers = user.getFollowers();
+        this.following = user.getFollowing();
+        this.popularity = user.getPopularity();
+        this.story = user.getStory();
     }
 
 }

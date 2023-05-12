@@ -35,7 +35,7 @@ public class UserController {
     @GetMapping(path = "/all-users")
     @JsonView(JsonViewProfiles.UserDetails.class)
     public List<UserDto> getAllUsers() {
-        return UserUtils.mapToUserDto(userService.getUsers());
+        return UserUtils.mapToUserDtos(userService.getUsers());
     }
 
     @PostMapping(path = "/register")
@@ -59,6 +59,12 @@ public class UserController {
         catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping(path = "/my-information")
+    @JsonView(JsonViewProfiles.UserDetails.class)
+    public UserDto getPersonalInformation(Principal principal) {
+        return UserUtils.mapToUserDto(userService.getStoredUser(principal));
     }
 
     @GetMapping(path = "/follow/{userId}")
