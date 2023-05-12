@@ -23,15 +23,7 @@ export async function makeRequest(
         const convertedArea = parseInt(area);
         let result: ChannelPost[] | RequestError;
         if (method === 'POST') {
-            console.log(endpoint);
-            console.log(convertedArea);
-            console.log(method);
-            console.log(categoryValue);
-            console.log(title);
-            console.log(text);
-            console.log(headers);
             result = await makeApiRequest(endpoint, convertedArea, method, categoryValue, '', title, text, headers);
-            console.log(result);
         }
         else {
             result = await makeApiRequest(endpoint, convertedArea, method, categoryValue, filterValue);
