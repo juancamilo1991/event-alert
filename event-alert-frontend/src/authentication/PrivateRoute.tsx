@@ -7,6 +7,7 @@ const PrivateRoute= () => {
   const navigate = useNavigate();
 
   const [jwt, setJwt] = useLocalStorage('', 'jwt')
+  console.log(jwt);
 
   return (
     jwt ? navigate('/logout') : navigate('/login')
