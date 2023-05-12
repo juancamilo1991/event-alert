@@ -1,12 +1,19 @@
-.main {
+.container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    justify-content: space-between;
+    min-height: 100vh;
+}
+
+.main_content {
+    display: flex;
+    flex-direction: column;
     width: 100vw;
     max-width: 1600px;
 }
 
-.container {
+
+.main_container {
     display: grid;
     place-items: center;
 }
@@ -46,6 +53,13 @@
     grid-row: 1 / -1;
     position: relative;
     transition: all 0.2s ease-in-out;
+    margin-top: 50px;
+}
+
+.select_area {
+    position: absolute;
+    max-width: 200px;
+    padding: 0 50px;
 }
 
 .channel_posts {
@@ -53,7 +67,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
 }
 
 .all_posts_container {
@@ -83,10 +96,6 @@
     display: none;
 }
 
-.sidenav_active {
-    margin-right: 250px;
-    transition: all 0.2s ease-in-out;
-}
 
 .left_border_container {
     position: absolute;
