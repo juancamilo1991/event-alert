@@ -27,14 +27,14 @@ public class UserUtils {
         this.userService = userService;
     }
 
-    public static List<UserDto> mapToUserDto(List<User> users) {
+    public static List<UserDto> mapToUserDtos(List<User> users) {
         return users.stream()
                 .map(user -> new UserDto(user))
                 .collect(Collectors.toList());
     }
 
-    public User getStoredUser (Principal principal) throws UsernameNotFoundException {
-            return userDetailsService.getUserByUsername(principal);
+    public static UserDto mapToUserDto(User user) {
+        return new UserDto(user);
     }
 
     public Popularity getPopularity(Long id) {
